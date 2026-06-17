@@ -20,6 +20,8 @@ def top_words(text, n=5):
 def main():
     parser = argparse.ArgumentParser(description="Count words and characters in a text file.")
     parser.add_argument("file", help="Path to the text file")
+    parser.add_argument("--top", type=int, default=5, metavar="N",
+                        help="Show top N words (default: 5)")
     args = parser.parse_args()
 
     try:
@@ -32,8 +34,8 @@ def main():
     print(f"Words:      {count_words(text)}")
     print(f"Characters: {count_chars(text)}")
     print()
-    print("Top 5 words:")
-    for word, count in top_words(text):
+    print(f"Top {args.top} words:")
+    for word, count in top_words(text, args.top):
         print(f"  {word:<12}{count}")
 
 

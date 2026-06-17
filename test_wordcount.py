@@ -35,5 +35,29 @@ class TestTopWords(unittest.TestCase):
         self.assertEqual(len(result), 2)
 
 
+class TestMain(unittest.TestCase):
+    def test_top_argument(self):
+        import io
+        import os
+        import tempfile
+        from unittest.mock import patch
+        from wordcount import main
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt',
+                                         delete=False, encoding='utf-8') as f:
+            f.write("a a a b b c c c d")
+            tmp = f.name
+        try:
+            with patch('sys.argv', ['wordcount.py', '--top', '2', tmp]), \
+                 patch('sys.stdout', new_callable=io.StringIO) as mock_out:
+                main()
+            output = mock_out.getvalue()
+            self.assertIn("Top 2 words:", output)
+            lines = [l for l in output.splitlines() if l.startswith("  ")]
+            self.assertEqual(len(lines), 2)
+        finally:
+            os.unlink(tmp)
+
+
 if __name__ == "__main__":
     unittest.main()
